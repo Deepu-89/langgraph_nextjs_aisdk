@@ -4,9 +4,11 @@ import { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { EndpointsContext } from "@/app/agent";
-import { useActions } from "@/utils/client";
+// import { useActions } from "@/utils/client";
 import { LocalContext } from "@/app/shared";
 import { HumanMessageText } from "./message";
+import { type AI } from "@/utils/createai";
+import { useAIState, useActions, useUIState } from "ai/rsc";
 
 export interface ChatProps {}
 
@@ -33,7 +35,15 @@ function FileUploadMessage({ file }: { file: File }) {
 }
 
 export default function Chat() {
-  const actions = useActions<typeof EndpointsContext>();
+  // const actions = useActions<typeof EndpointsContext>();
+  const { agent } = useActions<typeof AI>();
+  console.log(agent);
+
+  const [conversation, setConversation] = useUIState();
+  console.log(conversation, setConversation);
+
+  const [aiState] = useAIState();
+  console.log(aiState);
 
   const [elements, setElements] = useState<JSX.Element[]>([]);
   const [history, setHistory] = useState<[role: string, content: string][]>([]);
@@ -48,7 +58,7 @@ export default function Chat() {
       base64File = await convertFileToBase64(selectedFile);
     }
 
-    const element = await actions.agent({
+    const element = await agent({
       input,
       chat_history: history,
       file:
@@ -67,7 +77,7 @@ export default function Chat() {
         <div className="flex flex-col gap-1 w-full max-w-fit mr-auto">
           {element.ui}
         </div>
-      </div>,
+      </div>
     );
 
     // consume the value stream to obtain the final value

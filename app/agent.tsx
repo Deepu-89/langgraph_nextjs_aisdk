@@ -2,8 +2,8 @@ import { agentExecutor } from "@/ai/graph";
 import { exposeEndpoints, streamRunnableUI } from "@/utils/server";
 import { HumanMessage, AIMessage } from "@langchain/core/messages";
 
-const convertChatHistoryToMessages = (
-  chat_history: [role: string, content: string][],
+export const convertChatHistoryToMessages = (
+  chat_history: [role: string, content: string][]
 ) => {
   return chat_history.map(([role, content]) => {
     switch (role) {
@@ -18,7 +18,7 @@ const convertChatHistoryToMessages = (
   });
 };
 
-function processFile(input: {
+export function processFile(input: {
   input: string;
   chat_history: [role: string, content: string][];
   file?: {
